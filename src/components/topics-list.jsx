@@ -1,18 +1,23 @@
 var React = require('react');
 var TopicStore = require('../stores/topic-stores');
 var Reflux = require('reflux');
+var Actions = require('actions');
 
 module.exports = React.createClass({
 	mixins: [
+		// listens for any events that are coming from TopicStore, 
+		// call onChange function when event triggered by store
 		Reflux.listenTo(TopicStore, 'onChange')
 	],
 	getInitialState: function() {
 		return {
+			// assigning to empty array prevents erros when calling map function in renderTopics
 			topics: []
 		}
 	},
 	componentWillMount: function() {
-		TopicStore.getTopics()
+		// method is called from actions object in actions.jsx
+		Actions.getTopics();
 	},
 	render: function() {
 		return <div className = "list-group">
@@ -27,9 +32,10 @@ module.exports = React.createClass({
 			</li>
 		});
 	},
-	onChange: function(event, topicss) {
+	// Take new list of topics set it onto topics state param
+	onChange: function(event, topics) {
 		this.setState({
-			topics: topicss
+			topics: topics
 		})
 	}
 });
