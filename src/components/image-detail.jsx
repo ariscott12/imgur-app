@@ -1,17 +1,21 @@
 var React = require('react');
 var Reflux = require('reflux');
 var ImageStore = require('../stores/image-stores');
+var CommentStore = require('../stores/comment-store');
 var Actions = require('../actions');	
+var CommentBox = require('./comment-box');
 
 module.exports = React.createClass({
 	mixins: [
 		// listens for any events that are coming from TopicStore, 
 		// call onChange function when event triggered by store
-		Reflux.listenTo(ImageStore, 'onChange')
+		Reflux.listenTo(ImageStore, 'onChange'),
+		Reflux.listenTo(CommentStore, 'onChange')
 	],
 	getInitialState: function() {
 		return {
-			image: null
+			image: null,
+			comments: null
 		}
 	},
 	componentWillMount: function() {
@@ -26,7 +30,9 @@ module.exports = React.createClass({
 	},
 	onChange: function() {
 		this.setState({
-			image: ImageStore.find(this.props.params.id)
+			// returns specific image based on id in URL
+			image: ImageStore.find(this.props.params.id),
+			comments: CommentStore.comment
 		});
 	},
 	renderContent:function() {
@@ -42,6 +48,8 @@ module.exports = React.createClass({
 					<h5>{this.state.image.description}</h5>
 				</div>
 			</div>
+			<h3>Comments</h3>
+			{this.renderComments()}
 		</div>
 	},
 	renderImage: function() {
@@ -51,6 +59,13 @@ module.exports = React.createClass({
 			</video>
 		} else {
 			return <img src = {this.state.image.link} />
+		}
+	},
+	renderComments: function() {
+		if(!this.state.comments) {
+			return null
+		} else {
+			return <CommentBox comments = {this.state.comments} />
 		}
 	}
 });
