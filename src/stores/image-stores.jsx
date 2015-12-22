@@ -28,7 +28,6 @@ module.exports = Reflux.createStore({
 				} else {
 					this.images = [json.data];
 				}
-				console.log(json.data);
 				this.triggerChange();	
 			}.bind(this));
 	},
@@ -43,8 +42,6 @@ module.exports = Reflux.createStore({
 			this.getImage(id);
 			return null;
 		}
-
-		console.log(image);
 	},	
 	triggerChange: function() {
 		// fire trigger event
